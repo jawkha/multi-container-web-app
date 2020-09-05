@@ -1,0 +1,21 @@
+sudo: required
+services:
+  - docker
+before_install:
+  - docker build -t devjawkha/react-test -f ./client/Dockerfile.dev ./client
+
+script:
+  - docker run -e CI=true devjawkha/react-test yarn run test
+
+after_success:
+  - docker build -t devjawkha/multi-container-web-client ./client
+  - docker build -t devjawkha/multi-container-web-nginx ./nginx
+  - docker build -t devjawkha/multi-container-web-server ./server
+  - docker build -t devjawkha/multi-container-web-worker ./worker
+  # Log in to Docker CLI
+  - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
+  # Push built images to Docker Hub
+  - docker push devjawkha/multi-container-web-client
+  - docker push devjawkha/multi-container-web-nginx
+  - docker push devjawkha/multi-container-web-server
+  - docker push devjawkha/multi-container-web-worker
