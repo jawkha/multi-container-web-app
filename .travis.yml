@@ -19,3 +19,15 @@ after_success:
   - docker push devjawkha/multi-container-web-nginx
   - docker push devjawkha/multi-container-web-server
   - docker push devjawkha/multi-container-web-worker
+deploy:
+  edge: true
+  provider: elasticbeanstalk
+  region: us-east-2
+  app: multi-container-web-app
+  env: MultiContainerWebApp-env
+  bucket_name: elasticbeanstalk-us-east-2-197842155157
+  bucket_path: multi-container-web-app-bucket
+  on:
+    branch: master
+  access_key_id: $AWS_ACCESS_KEY
+  secret_access_key: $AWS_SECRET_KEY
